@@ -1,0 +1,27 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Clone repository') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('Build image') {
+            steps {
+                script {
+                    docker.build("YOUR_DOCKERHUB_USERNAME/my-nginx-app")
+                }
+            }
+        }
+        stage('Push image') {
+            steps {
+                script {
+                    docker.withRegistry('', 'dockerhub-credentials') {
+                        docker.image("YOUR_DOCKERHUB_USERNAME/my-nginx-app").push("latest")
+                    }
+                }
+            }
+        }
+    }
+}
